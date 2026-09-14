@@ -4,3 +4,4 @@ Eight more commits to do until i have completed the homework.
 I am starting to run out of things to write here.
 What should i write here?
 I know that this file is public, but what is the chance that somone random finds these files?
+Can i make this repository private whilst still be able to share it with people?
