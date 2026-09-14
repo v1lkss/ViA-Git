@@ -17,6 +17,9 @@ def cubed(b):
 def summ(a,b):
     return a+b
 
+def subtraction(x,y):
+    return x-y
+
 
 printing("Hello world!","I love learning to use Git!")
 
@@ -25,3 +28,4 @@ print(multiply(3,4))
 print(devide(12,6))
 print(cubed(3))
 print(summ(5,4))
+print(subtraction(9,2))
