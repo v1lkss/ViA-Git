@@ -11,9 +11,13 @@ def multiply(x,y):
 def devide(x,y):
     return x/y
 
+def cubed(b):
+    return b*b*b
+
 
 printing("Hello world!","I love learning to use Git!")
 
 print(squared(3))
 print(multiply(3,4))
 print(devide(12,6))
+print(cubed(3))
