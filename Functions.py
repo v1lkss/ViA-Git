@@ -14,6 +14,9 @@ def devide(x,y):
 def cubed(b):
     return b*b*b
 
+def summ(a,b):
+    return a+b
+
 
 printing("Hello world!","I love learning to use Git!")
 
@@ -21,3 +24,4 @@ print(squared(3))
 print(multiply(3,4))
 print(devide(12,6))
 print(cubed(3))
+print(summ(5,4))
