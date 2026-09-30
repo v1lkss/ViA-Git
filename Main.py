@@ -1,8 +1,7 @@
 import Functions
+import conf
 
 print('First Time using Git !!!')
-a=10
-b=12
-print(a*b)
+print(conf.x*conf.y)
 
 Functions.printing("Hello!", "I imported the Functions file")
