@@ -4,25 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48d7de09-f4c5-4eec-95db-98fc82ecf50d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/src/main/java/com/git/project/ProjectApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project/src/test/java/com/git/project/ProjectApplicationTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Functions.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Text.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/conf.py" beforeDir="false" />
-    </list>
+    <list default="true" id="48d7de09-f4c5-4eec-95db-98fc82ecf50d" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
