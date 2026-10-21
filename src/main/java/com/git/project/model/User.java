@@ -19,6 +19,9 @@ public class User {
 
     private String name;
 
+    @Column(nullable = false)
+    private String role = "USER";
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Listing> listings;
     
@@ -29,6 +32,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.name = name;
+        this.role = role;
     }
     
     
@@ -43,6 +47,9 @@ public class User {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
     public List<Listing> getListings() { return listings; }
     public void setListings(List<Listing> listings) { this.listings = listings; }
