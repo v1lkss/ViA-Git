@@ -5,6 +5,7 @@ import com.git.project.model.User;
 import com.git.project.repository.ListingRepository;
 import com.git.project.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,13 @@ public class ListingController {
     public ListingController(ListingRepository listingRepository, UserRepository userRepository) {
         this.listingRepository = listingRepository;
         this.userRepository = userRepository;
+    }
+
+    @GetMapping
+    public String getListingsPage(Model model) {
+        List<Listing> listings = listingRepository.findAll();
+        model.addAttribute("listings", listings);
+        return "listings";
     }
 
     // Get all listings
