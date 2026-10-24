@@ -30,80 +30,81 @@ public class ListingController {
     }
 
     @GetMapping
-    public String getListingsPage(Model model) {
+    public String getListingsPage(Model model, HttpSession session) {
+        User user = getAuthenticatedUser(session);
+        if (user == null) {
+            return "redirect:/login";
+        }
+
         List<Listing> listings = listingRepository.findAll();
         model.addAttribute("listings", listings);
+        model.addAttribute("newListing", new Listing());
+        model.addAttribute("currentUser", user);
         return "listings";
     }
     
 
     // Create a new listing (requires the user's ID)
-    @PostMapping
-    public ResponseEntity<?> createListing(@RequestParam Long userId, @RequestBody Listing newListing) {
-        Optional<User> userOpt = userRepository.findById(userId);
-        if (userOpt.isEmpty()) {
-            return ResponseEntity.badRequest().body("User not found");
+    @PostMapping("/create")
+    public String createListing(HttpSession session, @ModelAttribute("newListing") Listing newListing) {
+        User user = getAuthenticatedUser(session);
+        if (user == null) {
+            return "redirect:/login";
         }
 
-        newListing.setUser(userOpt.get());
-        Listing savedListing = listingRepository.save(newListing);
-        return ResponseEntity.ok(savedListing);
+        newListing.setUser(user);
+        listingRepository.save(newListing);
+        return "redirect:/listings";
     }
 
     // Edit an existing listing (Owner OR Admin can edit)
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateListing(
+    @PostMapping("/update/{id}")
+    public String updateListing(
             @PathVariable Long id,
-            @RequestParam Long userId,
-            @RequestBody Listing updatedListing) {
+            HttpSession session,
+            @ModelAttribute("listing") Listing updatedListing) {
+
+        User user = getAuthenticatedUser(session);
+        if (user == null) {
+            return "redirect:/login";
+        }
 
         Optional<Listing> listingOpt = listingRepository.findById(id);
-        Optional<User> userOpt = userRepository.findById(userId);
+        if (listingOpt.isPresent()) {
+            Listing listing = listingOpt.get();
 
-        if (listingOpt.isEmpty() || userOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            boolean isOwner = listing.getUser().getId().equals(user.getId());
+            boolean isAdmin = "ADMIN".equals(user.getRole());
+
+            if (isOwner || isAdmin) {
+                listing.setTitle(updatedListing.getTitle());
+                listing.setDescription(updatedListing.getDescription());
+                listing.setPrice(updatedListing.getPrice());
+                listingRepository.save(listing);
+            }
         }
-
-        Listing listing = listingOpt.get();
-        User user = userOpt.get();
-
-        // Check if user is the owner OR an admin
-        boolean isOwner = listing.getUser().getId().equals(user.getId());
-        boolean isAdmin = "ADMIN".equals(user.getRole());
-
-        if (!isOwner && !isAdmin) {
-            return ResponseEntity.status(403).body("Access denied: You can only edit your own listings unless you are an admin.");
-        }
-
-        // Perform update
-        listing.setTitle(updatedListing.getTitle());
-        listing.setDescription(updatedListing.getDescription());
-        listing.setPrice(updatedListing.getPrice());
-
-        return ResponseEntity.ok(listingRepository.save(listing));
+        return "redirect:/listings";
     }
 
     // Delete a listing (Owner OR Admin can delete)
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteListing(@PathVariable Long id, @RequestParam Long userId) {
+    @PostMapping("/delete/{id}")
+    public String deleteListing(@PathVariable Long id, HttpSession session) {
+        User user = getAuthenticatedUser(session);
+        if (user == null) {
+            return "redirect:/login";
+        }
+
         Optional<Listing> listingOpt = listingRepository.findById(id);
-        Optional<User> userOpt = userRepository.findById(userId);
+        if (listingOpt.isPresent()) {
+            Listing listing = listingOpt.get();
 
-        if (listingOpt.isEmpty() || userOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            boolean isOwner = listing.getUser().getId().equals(user.getId());
+            boolean isAdmin = "ADMIN".equals(user.getRole());
+
+            if (isOwner || isAdmin) {
+                listingRepository.delete(listing);
+            }
         }
-
-        Listing listing = listingOpt.get();
-        User user = userOpt.get();
-
-        boolean isOwner = listing.getUser().getId().equals(user.getId());
-        boolean isAdmin = "ADMIN".equals(user.getRole());
-
-        if (!isOwner && !isAdmin) {
-            return ResponseEntity.status(403).body("Access denied: You can only delete your own listings unless you are an admin.");
-        }
-
-        listingRepository.delete(listing);
-        return ResponseEntity.ok().body("Listing deleted successfully");
+        return "redirect:/listings";
     }
 }
