@@ -129,4 +129,19 @@ public class ListingController {
         }
         return "redirect:/listings";
     }
+
+    @GetMapping("/profile")
+    public String getUserProfile(HttpSession session, Model model) {
+        User user = getAuthenticatedUser(session);
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        // Fetch only listings belonging to this user
+        List<Listing> userListings = listingRepository.findByUserId(user.getId());
+
+        model.addAttribute("currentUser", user);
+        model.addAttribute("listings", userListings);
+        return "profile";
+    }
 }
