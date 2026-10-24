@@ -54,7 +54,7 @@
     <p th:text="${listing.description}">Description goes here...</p>
     <p><strong>Price: $<span th:text="${listing.price}">0.00</span></strong></p>
 
-    <<div class="actions" th:if="${currentUser != null and ((listing.user != null and listing.user.id == currentUser.id) or currentUser.role == 'ADMIN')}">
+    <div class="actions" th:if="${currentUser != null and ((listing.user != null and listing.user.id == currentUser.id) or currentUser.role == 'ADMIN')}">
     <a th:href="@{/listings/edit/{id}(id=${listing.id})}" class="btn btn-warning">Edit</a>
 
     <form th:action="@{/listings/delete/{id}(id=${listing.id})}" method="post" style="display:inline;">
