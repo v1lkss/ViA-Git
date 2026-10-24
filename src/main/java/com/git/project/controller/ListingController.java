@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,17 +25,13 @@ public class ListingController {
         this.userRepository = userRepository;
     }
 
-    private User getAuthenticatedUser(HttpSession session) {
-        return (User) session.getAttribute("loggedInUser");
+    private User getAuthenticatedUser(Principal principal) {
+        return userRepository.findByEmail(principal.getName()).orElse(null);
     }
 
     @GetMapping
-    public String getListingsPage(Model model, HttpSession session) {
-        User user = getAuthenticatedUser(session);
-        if (user == null) {
-            return "redirect:/login";
-        }
-
+    public String getListingsPage(Model model, Principal principal) {
+        User user = getAuthenticatedUser(principal);
         List<Listing> listings = listingRepository.findAll();
         model.addAttribute("listings", listings);
         model.addAttribute("newListing", new Listing());
@@ -46,12 +42,8 @@ public class ListingController {
 
     // Create a new listing (requires the user's ID)
     @PostMapping("/create")
-    public String createListing(HttpSession session, @ModelAttribute("newListing") Listing newListing) {
-        User user = getAuthenticatedUser(session);
-        if (user == null) {
-            return "redirect:/login";
-        }
-
+    public String createListing(@ModelAttribute("newListing") Listing newListing, Principal principal) {
+        User user = getAuthenticatedUser(principal);
         newListing.setUser(user);
         listingRepository.save(newListing);
         return "redirect:/listings";
@@ -61,13 +53,10 @@ public class ListingController {
     @PostMapping("/update/{id}")
     public String updateListing(
             @PathVariable Long id,
-            HttpSession session,
-            @ModelAttribute("listing") Listing updatedListing) {
+            @ModelAttribute("listing") Listing updatedListing,
+            Principal principal) {
 
-        User user = getAuthenticatedUser(session);
-        if (user == null) {
-            return "redirect:/login";
-        }
+        User user = getAuthenticatedUser(principal);
 
         Optional<Listing> listingOpt = listingRepository.findById(id);
         if (listingOpt.isPresent()) {
@@ -87,12 +76,8 @@ public class ListingController {
     }
 
     @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable Long id, HttpSession session, Model model) {
-        User user = getAuthenticatedUser(session);
-        if (user == null) {
-            return "redirect:/login";
-        }
-
+    public String showEditForm(@PathVariable Long id, Model model,Principal principal) {
+        User user = getAuthenticatedUser(principal);
         Listing listing = listingRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid listing Id:" + id));
 
@@ -110,12 +95,9 @@ public class ListingController {
 
     // Delete a listing (Owner OR Admin can delete)
     @PostMapping("/delete/{id}")
-    public String deleteListing(@PathVariable Long id, HttpSession session) {
-        User user = getAuthenticatedUser(session);
-        if (user == null) {
-            return "redirect:/login";
-        }
-
+    public String deleteListing(@PathVariable Long id, Principal principal) {
+        User user = getAuthenticatedUser(principal);
+        
         Optional<Listing> listingOpt = listingRepository.findById(id);
         if (listingOpt.isPresent()) {
             Listing listing = listingOpt.get();
@@ -131,11 +113,8 @@ public class ListingController {
     }
 
     @GetMapping("/profile")
-    public String getUserProfile(HttpSession session, Model model) {
-        User user = getAuthenticatedUser(session);
-        if (user == null) {
-            return "redirect:/login";
-        }
+    public String getUserProfile(Model model, Principal principal) {
+        User user = getAuthenticatedUser(principal);
 
         // Fetch only listings belonging to this user
         List<Listing> userListings = listingRepository.findByUserId(user.getId());
