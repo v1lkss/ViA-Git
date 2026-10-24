@@ -3,6 +3,8 @@ package com.git.project.controller;
 import com.git.project.model.User;
 import com.git.project.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,9 @@ import java.util.Optional;
 public class AuthController {
 
     private final UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public AuthController(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -57,12 +62,19 @@ public class AuthController {
         model.addAttribute("user", new User());
         return "register"; // maps to register.html
     }
-    
-    
+
+
     @PostMapping("/register")
-    public String processRegister(@ModelAttribute User user) {
-        user.setRole("USER");
+    public String processRegistration(@ModelAttribute User user, Model model) {
+        // Hash the password before saving!
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // Set default role if not set
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("USER");
+        }
+
         userRepository.save(user);
-        return "redirect:/login?success";
+        return "redirect:/login?registered";
     }
 }
