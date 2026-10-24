@@ -2,6 +2,7 @@ package com.git.project.controller;
 
 import com.git.project.model.User;
 import com.git.project.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,18 +33,24 @@ public class AuthController {
 
     
     @PostMapping("/login")
-    public String processLogin(@RequestParam String email, @RequestParam String password, Model model) {
+    public String processLogin(@RequestParam String email, @RequestParam String password, HttpSession session, Model model) {
         Optional<User> userOpt = userRepository.findByEmail(email);
 
         if (userOpt.isPresent() && userOpt.get().getPassword().equals(password)) {
-            
+
+            session.setAttribute("loggedInUser", userOpt.get());
             return "redirect:/listings";
         }
 
         model.addAttribute("error", "Invalid email or password");
         return "login";
     }
-    
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login?logout";
+    }
     
     @GetMapping("/register")
     public String showRegisterPage(Model model) {

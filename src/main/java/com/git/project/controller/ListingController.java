@@ -4,6 +4,7 @@ import com.git.project.model.Listing;
 import com.git.project.model.User;
 import com.git.project.repository.ListingRepository;
 import com.git.project.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,10 @@ public class ListingController {
     public ListingController(ListingRepository listingRepository, UserRepository userRepository) {
         this.listingRepository = listingRepository;
         this.userRepository = userRepository;
+    }
+
+    private User getAuthenticatedUser(HttpSession session) {
+        return (User) session.getAttribute("loggedInUser");
     }
 
     @GetMapping
