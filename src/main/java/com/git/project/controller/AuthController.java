@@ -19,7 +19,11 @@ public class AuthController {
     public AuthController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
+    
+    @GetMapping("/")
+    public String redirectToLogin() {
+        return "redirect:/login";
+    }
     
     @GetMapping("/login")
     public String showLoginPage() {
