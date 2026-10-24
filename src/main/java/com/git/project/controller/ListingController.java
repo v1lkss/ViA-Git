@@ -73,7 +73,7 @@ public class ListingController {
         if (listingOpt.isPresent()) {
             Listing listing = listingOpt.get();
 
-            boolean isOwner = listing.getUser().getId().equals(user.getId());
+            boolean isOwner = listing.getUser() != null && listing.getUser().getId().equals(user.getId());
             boolean isAdmin = "ADMIN".equals(user.getRole());
 
             if (isOwner || isAdmin) {
@@ -84,6 +84,28 @@ public class ListingController {
             }
         }
         return "redirect:/listings";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, HttpSession session, Model model) {
+        User user = getAuthenticatedUser(session);
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        Listing listing = listingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid listing Id:" + id));
+
+        // Safe checks: handle cases where user might be null
+        boolean isOwner = listing.getUser() != null && listing.getUser().getId().equals(user.getId());
+        boolean isAdmin = "ADMIN".equals(user.getRole());
+
+        if (!isOwner && !isAdmin) {
+            return "redirect:/listings";
+        }
+
+        model.addAttribute("listing", listing);
+        return "edit-listings";
     }
 
     // Delete a listing (Owner OR Admin can delete)
@@ -98,7 +120,7 @@ public class ListingController {
         if (listingOpt.isPresent()) {
             Listing listing = listingOpt.get();
 
-            boolean isOwner = listing.getUser().getId().equals(user.getId());
+            boolean isOwner = listing.getUser() != null && listing.getUser().getId().equals(user.getId());
             boolean isAdmin = "ADMIN".equals(user.getRole());
 
             if (isOwner || isAdmin) {
