@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Profile</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 6px; box-shadow: 0px 2px 4px rgba(0,0,0,0.1); }
+        .btn { padding: 8px 12px; color: white; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-primary { background-color: #007bff; }
+        .btn-warning { background-color: #ffc107; color: black; }
+        .btn-danger { background-color: #dc3545; }
+        .btn-secondary { background-color: #6c757d; }
+        .actions { margin-top: 10px; display: flex; gap: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>My Profile</h1>
+    <div>
+        <a th:href="@{/listings}" class="btn btn-secondary">Back to Marketplace</a>
+        <a th:href="@{/logout}" class="btn btn-danger">Logout</a>
+    </div>
+</div>
+
+<!-- User Info Card -->
+<div class="card">
+    <h2>Account Details</h2>
+    <p><strong>Email:</strong> <span th:text="${currentUser.email}">user@example.com</span></p>
+    <p><strong>Role:</strong> <span th:text="${currentUser.role}">USER</span></p>
+</div>
+
+<!-- User's Listings -->
+<h2>My Listings</h2>
+<div th:if="${listings.empty}">
+    <p>You haven't posted any listings yet.</p>
+</div>
+
+<div th:each="listing : ${listings}" class="card">
+    <h3 th:text="${listing.title}">Listing Title</h3>
+    <p th:text="${listing.description}">Description goes here...</p>
+    <p><strong>Price: $<span th:text="${listing.price}">0.00</span></strong></p>
+
+    <div class="actions">
+        <a th:href="@{/listings/edit/{id}(id=${listing.id})}" class="btn btn-warning">Edit</a>
+
+        <form th:action="@{/listings/delete/{id}(id=${listing.id})}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
