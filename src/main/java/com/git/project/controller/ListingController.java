@@ -5,14 +5,15 @@ import com.git.project.model.User;
 import com.git.project.repository.ListingRepository;
 import com.git.project.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@RestController
-@RequestMapping("/api/listings")
+@Controller
+@RequestMapping("/listings")
 public class ListingController {
 
     private final ListingRepository listingRepository;
@@ -29,12 +30,7 @@ public class ListingController {
         model.addAttribute("listings", listings);
         return "listings";
     }
-
-    // Get all listings
-    @GetMapping
-    public List<Listing> getAllListings() {
-        return listingRepository.findAll();
-    }
+    
 
     // Create a new listing (requires the user's ID)
     @PostMapping
